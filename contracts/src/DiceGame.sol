@@ -80,14 +80,16 @@ contract DiceGame {
 
         _games[epoch].players[num].push(msg.sender);
 
-		require(!commiting, "InCommitmentPhase");
+        // TODO
+		// require(!commiting, "InCommitmentPhase");
+
 		require(uint232(commitment.hash) != 0, "NothingToResolve");
 		require(commitment.epoch == epoch, "InvalidEpoch");
 
         bytes29 commitmentHash = _commitments[msg.sender].hash;
         require(uint232(commitmentHash) != 0, "NoCommitmentToReveal");
 
-        bytes32 computedHash = keccak256(abi.encode(secret, num));
+        bytes29 computedHash = bytes29(keccak256(abi.encode(secret, num)));
 
         require(computedHash == commitmentHash, "CommitHashNotMatching");
 
