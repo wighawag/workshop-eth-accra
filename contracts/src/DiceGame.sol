@@ -110,7 +110,9 @@ contract DiceGame {
 	}
 
     function claimWinnings(uint24 epoch, uint256 i) external {
-    
+        (uint24 currentEpoch, ) = _epoch();
+        require(epoch < currentEpoch, "GameNotResolvedYet");
+
         uint8 roll = uint8(uint256(rollHash) % 8);
         address[] storage winners = _games[epoch].players[roll];
         address winner = winners[i];
