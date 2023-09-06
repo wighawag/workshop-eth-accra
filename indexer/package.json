@@ -1,0 +1,30 @@
+{
+  "name": "workshop-eth-accra-indexer",
+  "version": "0.1.0",
+  "description": "workshop-eth-accra indexer function to generate the state of all the registry messages",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "ethereum-indexer-js-processor": "^0.6.5",
+    "workshop-eth-accra-common": "workspace:*",
+    "named-logs": "^0.2.2"
+  },
+  "devDependencies": {
+    "ethereum-indexer-server": "^0.6.7",
+    "ldenv": "^0.3.7",
+    "prettier": "^3.0.2",
+    "tsup": "^7.2.0",
+    "typescript": "^5.1.6",
+    "wait-on": "^7.0.1"
+  },
+  "scripts": {
+    "eis": "eis",
+    "serve": "ldenv eis run -n @@RPC_URL_:MODE,RPC_URL -p ./dist/index.cjs --disable-cache --deployments ../contracts/deployments/@@MODE @@",
+    "build": "tsup src/index.ts --dts --format esm,cjs",
+    "dev": "echo 'waiting for src/contracts.ts...'; wait-on src/contracts.ts && tsup src/index.ts --dts --format esm,cjs --watch",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
+  }
+}
