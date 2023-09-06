@@ -14,6 +14,17 @@ import "hardhat/console.sol";
 
 
 contract DiceGame {
+    event CommitmentMade(address indexed player, uint24 indexed epoch, bytes29 commitmentHash);
+	event CommitmentVoid(address indexed player, uint24 indexed epoch);
+	event CommitmentRevealed(
+		address indexed player,
+		uint24 indexed epoch,
+		bytes29 indexed commitmentHash,
+		bytes32 secret,
+		uint8 num
+	);
+    event WinningWithdrawn(address indexed player, uint24 indexed epoch, uint8 roll, uint256 amount);
+
 
     uint256 internal constant COMMIT_PHASE_DURATION = 24 * 3600;
 	uint256 internal constant RESOLUTION_PHASE_DURATION = 24 * 3600;
@@ -58,6 +69,8 @@ contract DiceGame {
 		require(uint232(commitment.hash) == 0, "PreviousCommitmentNotResolved");
 
         _commitments[msg.sender] = Commitment({hash: commitmentHash, epoch: epoch});
+
+        emit CommitmentMade(msg.sender, epoch, commitmentHash);
     }
 
     function reveal(bytes32 secret, uint8 num) external {
@@ -82,6 +95,8 @@ contract DiceGame {
         rollHash = rollHash ^ secret;
 
         payable(msg.sender).transfer(ENTRY_COST); // we return the extra value used to ensure player reveal
+
+        emit CommitmentRevealed(msg.sender, epoch, commitmentHash, secret, num);
     }
 
     function acknowledgedFailedReveal() external {
@@ -90,20 +105,25 @@ contract DiceGame {
 		require(uint232(commitment.hash) != 0, "NothingToResolve");
         require(commitment.epoch != epoch, "CanStillResolve");
 		_commitments[msg.sender].hash = bytes29(0);
+        emit CommitmentVoid(msg.sender, epoch);
 	}
 
     function claimWinnings(uint24 epoch, uint256 i) external {
     
-        uint256 roll = uint256(rollHash) % 8;
+        uint8 roll = uint8(uint256(rollHash) % 8);
         address[] storage winners = _games[epoch].players[roll];
         address winner = winners[i];
         require(winner != address(0), "AlreadyClaimed");
 
         _games[epoch].players[roll][i] = address(0);
 
-        (bool sent, ) = winner.call{value: _games[epoch].prize / winners.length}("");
+        uint256 amount = _games[epoch].prize / winners.length;
+
+        (bool sent, ) = winner.call{value: amount}("");
 
         require(sent, "Failed to send Ether");
+
+        emit WinningWithdrawn(winner, epoch, roll, amount);
     }
 
 }
