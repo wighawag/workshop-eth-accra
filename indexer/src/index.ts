@@ -13,23 +13,23 @@ const WorkshopEthAccraIndexerProcessor: JSProcessor<MergedAbis<typeof contractsI
 		// you return here the starting state, here an empty array for the greetings
 		return {greetings: []};
 	},
-	onMessageChanged(state, event) {
+	onCommitmentRevealed(state, event) {
 		// we lookup existing message from this user:
-		const findIndex = state.greetings.findIndex((v) => v.account === event.args.user);
+		// const findIndex = state.greetings.findIndex((v) => v.account === event.args.user);
 
-		// the message is one of the args of the event object (automatically populated and typed! from the abi)
-		const message = event.args.message;
+		// // the message is one of the args of the event object (automatically populated and typed! from the abi)
+		// const message = event.args.message;
 
-		if (findIndex === -1) {
-			// if none message exists from that user we push a new entry
-			state.greetings.push({
-				account: event.args.user,
-				message: message,
-			});
-		} else {
-			// else we edit the message
-			state.greetings[findIndex].message = message;
-		}
+		// if (findIndex === -1) {
+		// 	// if none message exists from that user we push a new entry
+		// 	state.greetings.push({
+		// 		account: event.args.user,
+		// 		message: message,
+		// 	});
+		// } else {
+		// 	// else we edit the message
+		// 	state.greetings[findIndex].message = message;
+		// }
 	},
 };
 

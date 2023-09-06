@@ -6,13 +6,6 @@ pragma solidity >=0.8.0 <= 0.9.0;
 import "hardhat/console.sol";
 
 
-/**
-*@title Dice Game.
-*@author ABossOfMyself.
-*@notice Created a Dice Game contract that allows users to roll the dice to try and win the prize. If players roll either a "0", "1", or "2" they will win the current prize amount.
-*/
-
-
 contract DiceGame {
     event CommitmentMade(address indexed player, uint24 indexed epoch, bytes29 commitmentHash);
 	event CommitmentVoid(address indexed player, uint24 indexed epoch);
@@ -41,6 +34,12 @@ contract DiceGame {
     mapping(address => Commitment) _commitments;
     bytes32 rollHash;
     mapping(uint256 => Game) _games;
+    
+
+    function prize() external view returns (uint256) {
+        (uint24 epoch,) = _epoch();
+        return _games[epoch].prize;
+    }
 
     function _epoch() internal view virtual returns (uint24 epoch, bool commiting) {
 		uint256 epochDuration = COMMIT_PHASE_DURATION + RESOLUTION_PHASE_DURATION;

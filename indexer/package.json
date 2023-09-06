@@ -1,7 +1,7 @@
 {
   "name": "workshop-eth-accra-indexer",
   "version": "0.1.0",
-  "description": "workshop-eth-accra indexer function to generate the state of all the registry messages",
+  "description": "workshop-eth-accra indexer function to generate the state of the diceGame",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",

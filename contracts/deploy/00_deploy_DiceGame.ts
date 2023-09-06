@@ -6,16 +6,15 @@ export default execute(
 	context,
 	async ({deployViaProxy, accounts, artifacts}) => {
 		const contract = await deployViaProxy(
-			'Registry',
+			'DiceGame',
 			{
 				account: accounts.deployer,
-				artifact: artifacts.GreetingsRegistry,
-				args: [''],
+				artifact: artifacts.DiceGame
 			},
 			{
 				owner: accounts.deployer,
 			}
 		);
 	},
-	{tags: ['Registry', 'Registry_deploy']}
+	{tags: ['DiceGame', 'DiceGame_deploy']}
 );
